@@ -1,6 +1,6 @@
 #!flask/bin/python
 from flask import request, Blueprint
-from app.data_provider import get_provider
+from app.providers.provider import Provider
 from app import app
 
 # Initialize blueprint
@@ -10,8 +10,8 @@ api = Blueprint('api', __name__)
 def groups():
   r = request.args
   provider_id =  r.get('provider_id')
-  p = get_provider(provider_id)
-  return p.get_groups()
+  p = Provider.get(provider_id)
+  return p.fetch_groups()
 
 
 @api.route('/schedule')
@@ -19,7 +19,11 @@ def schedule():
   r = request.args
   provider_id =  r.get('provider_id')
   group_id = r.get('group_id')
-  week = r.get('week')
-  subgroup = r.get('subgroup')
-  p = get_provider(provider_id)
-  return p.get_schedule(group_id, week, subgroup)
+  p = Provider.get(provider_id)
+  return p.fetch_schedule(group_id)
+
+
+
+@api.route('/providers')
+def providers():
+  return Provider.all()
