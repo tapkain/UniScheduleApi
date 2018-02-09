@@ -1,4 +1,4 @@
-from nafta_provider import NaftaProvider
+from app.nafta_provider import NaftaProvider
 
 class Week:
   NUMERATOR = 1
