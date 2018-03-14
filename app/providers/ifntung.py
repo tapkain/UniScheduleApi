@@ -1,5 +1,8 @@
 import requests
 from flask import jsonify
+import json
+from app.models.lesson import Lesson
+from app.models.schedule import Schedule
 
 class Week:
   NUMERATOR = 1
@@ -11,6 +14,9 @@ class Subgroup:
   FIRST = 1
   SECOND = 2
   COMMON = 0
+
+def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
+def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
 
 
 class IFNTUNG:
@@ -24,12 +30,16 @@ class IFNTUNG:
 
 
   def fetch_schedule(self, group):
-    s = set()
-    s.add(self.schedules_to_model(self.get_schedule(group, Week.DENUMERATOR, Subgroup.FIRST)))
-    s.add(self.schedules_to_model(self.get_schedule(group, Week.NUMERATOR, Subgroup.FIRST)))
-    s.add(self.schedules_to_model(self.get_schedule(group, Week.DENUMERATOR, Subgroup.SECOND)))
-    s.add(self.schedules_to_model(self.get_schedule(group, Week.NUMERATOR, Subgroup.SECOND)))
-    return jsonify(list(s))
+    l = list()
+    l.extend(self.schedules_to_model(self.get_schedule(group, Week.DENUMERATOR, Subgroup.FIRST)))
+    l.extend(self.schedules_to_model(self.get_schedule(group, Week.NUMERATOR, Subgroup.FIRST)))
+    l.extend(self.schedules_to_model(self.get_schedule(group, Week.DENUMERATOR, Subgroup.SECOND)))
+    l.extend(self.schedules_to_model(self.get_schedule(group, Week.NUMERATOR, Subgroup.SECOND)))
+
+    s = Schedule()
+    s.lessons = list(set(l))
+    s.day = l[0].day
+    return jsonify(s)
 
 
   def get_schedule(self, group, week, subgroup):
@@ -40,4 +50,32 @@ class IFNTUNG:
 
 
   def schedules_to_model(self, schedules):
-    return schedules
+    data = self.prepare_json_from(schedules)
+    lessons = []
+
+    for scheduleJson in data:
+      for lessonJson in scheduleJson['lessons']:
+        lesson = Lesson()
+        lesson.lessonNumber = lessonJson['period']
+        lesson.week = lessonJson['week']
+        lesson.subgroup = lessonJson['subgroup']
+        lesson.type = lessonJson['type']
+        lesson.name = lessonJson['name']
+        lesson.teacher = lessonJson['teacher']
+        lesson.day = scheduleJson['day']
+        lessons.append(lesson)
+
+    return lessons
+
+
+  def prepare_json_from(self, input):
+    # WORKAROUND to cut the UTF-8 BOM-8 symbol
+    # possible bug here when accessing this file
+    # from multiple streams
+    with open('temp', 'w') as t:
+      t.write(input)
+
+    with open('temp', 'r', encoding='utf-8-sig') as t:
+      data = json.load(t)
+
+    return data
