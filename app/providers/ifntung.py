@@ -3,6 +3,7 @@ from flask import jsonify
 import json
 from app.models.lesson import Lesson
 from app.models.schedule import Schedule
+from app.models.group import Group
 
 class Week:
   NUMERATOR = 1
@@ -23,7 +24,22 @@ class IFNTUNG:
   def fetch_groups(self):
     url = f'{IFNTUNG.base_url}/api/groups.php'
     r = requests.get(url)
-    return r.text
+    groups = self.groups_to_model(r.text)
+    return jsonify(groups)
+
+
+  def groups_to_model(self, groups):
+    data = self.prepare_json_from(groups)
+    groups = []
+
+    for groupJson in data:
+      group = Group()
+      group.id = groupJson['id']
+      group.name = groupJson['name']
+      group.faculty = groupJson['faculty']
+      groups.append(group)
+
+    return groups
 
 
   def fetch_schedule(self, group):
