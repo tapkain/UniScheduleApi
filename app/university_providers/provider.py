@@ -1,7 +1,7 @@
 from app.university_providers.ifntung import IFNTUNG
 
 class Provider:
-  IFNTUNG = 'ifntung'
+  IFNTUNG = 'IFNTUNG'
 
   def get(provider):
     if provider == Provider.IFNTUNG:
@@ -10,4 +10,6 @@ class Provider:
 
 
   def all():
-    return vars(Provider)
+    unis = [attr for attr in dir(Provider) if not callable(getattr(Provider, attr)) and not attr.startswith("__")]
+    print('ZAL', unis)
+    return unis

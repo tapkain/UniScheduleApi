@@ -1,5 +1,5 @@
 #!flask/bin/python
-from flask import request, Blueprint
+from flask import request, Blueprint, jsonify
 from app.university_providers.provider import Provider
 from app import app
 
@@ -26,4 +26,4 @@ def schedule():
 
 @api.route('/universities')
 def universities():
-  return Provider.all()
+  return jsonify(Provider.all())
