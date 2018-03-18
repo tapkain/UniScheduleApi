@@ -15,9 +15,6 @@ class Subgroup:
   SECOND = 2
   COMMON = 0
 
-def _json_object_hook(d): return namedtuple('X', d.keys())(*d.values())
-def json2obj(data): return json.loads(data, object_hook=_json_object_hook)
-
 
 class IFNTUNG:
   base_url = 'http://rozklad.nung.edu.ua/application'
@@ -38,7 +35,6 @@ class IFNTUNG:
 
     s = Schedule()
     s.lessons = list(set(l))
-    s.day = l[0].day
     return jsonify(s)
 
 
