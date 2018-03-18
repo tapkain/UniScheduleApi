@@ -1,4 +1,4 @@
-from app.providers.ifntung import IFNTUNG
+from app.university_providers.ifntung import IFNTUNG
 
 class Provider:
   IFNTUNG = 'ifntung'
