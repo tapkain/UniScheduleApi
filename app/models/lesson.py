@@ -3,7 +3,7 @@ class Lesson:
   	self.lessonNumber = 0
   	self.week = 0
   	self.day = 0
-  	self.subgroup = ''
+  	self.subgroup = 0
   	self.type = ''
   	self.name = ''
   	self.teacher = ''

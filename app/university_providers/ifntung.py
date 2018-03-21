@@ -51,7 +51,7 @@ class IFNTUNG:
 
     s = Schedule()
     s.lessons = list(set(l))
-    return jsonify(s)
+    return jsonify(list(set(l)))
 
 
   def get_schedule(self, group, week, subgroup):
