@@ -2,7 +2,6 @@ import requests
 from flask import jsonify
 import json
 from app.models.lesson import Lesson
-from app.models.schedule import Schedule
 from app.models.group import Group
 
 class Week:
@@ -49,8 +48,6 @@ class IFNTUNG:
     l.extend(self.schedules_to_model(self.get_schedule(group, Week.DENUMERATOR, Subgroup.SECOND)))
     l.extend(self.schedules_to_model(self.get_schedule(group, Week.NUMERATOR, Subgroup.SECOND)))
 
-    s = Schedule()
-    s.lessons = list(set(l))
     return jsonify(list(set(l)))
 
 
