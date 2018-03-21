@@ -34,7 +34,7 @@ class IFNTUNG:
 
     for groupJson in data:
       group = Group()
-      group.id = groupJson['id']
+      group.id = int(groupJson['id'])
       group.name = groupJson['name']
       group.faculty = groupJson['faculty']
       groups.append(group)
@@ -68,13 +68,13 @@ class IFNTUNG:
     for scheduleJson in data:
       for lessonJson in scheduleJson['lessons']:
         lesson = Lesson()
-        lesson.lessonNumber = lessonJson['period']
-        lesson.week = lessonJson['week']
-        lesson.subgroup = lessonJson['subgroup']
+        lesson.lessonNumber = int(lessonJson['period'])
+        lesson.week = int(lessonJson['week'])
+        lesson.subgroup = int(lessonJson['subgroup'])
         lesson.type = lessonJson['type']
         lesson.name = lessonJson['name']
         lesson.teacher = lessonJson['teacher']
-        lesson.day = scheduleJson['day']
+        lesson.day = int(scheduleJson['day'])
         lessons.append(lesson)
 
     return lessons
